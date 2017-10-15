@@ -1,0 +1,33 @@
+/*
+ * pid.h
+ *
+ * Created: 25/05/2016 17:07:00
+ *  Author: Emile
+ */ 
+
+
+#ifndef PID_H_
+#define PID_H_
+
+#include <stdint.h>
+
+typedef struct
+{
+	float p;
+	float i;
+	float d;
+	
+	uint16_t setPoint;
+	
+	float integral;
+	float integralLimit;
+	
+	int16_t prevError;
+	
+} tPidData;
+
+
+int16_t pidRun( tPidData *pidData, uint16_t pos);
+
+
+#endif /* PID_H_ */

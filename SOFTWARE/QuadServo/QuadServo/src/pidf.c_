@@ -1,0 +1,54 @@
+
+#include "pidf.h"
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+
+int16_t pidRun( tPidData *pidData, uint16_t pos)
+{
+	int32_t error = (int16_t)pidData->setPoint - (int16_t)pos;
+	/*
+	if (abs(error) > 5)
+		pidData->integral += error;	
+	else
+		pidData->integral = 0;
+		*/
+	if( pidData->integral > pidData->integralLimit ) pidData->integral =  pidData->integralLimit;
+	if( pidData->integral < -pidData->integralLimit ) pidData->integral =  -pidData->integralLimit;
+	
+		
+	//if( abs( error) < 3)
+	//	pidData->integral = 0;
+	
+	//pidData->p - 0.5;
+	
+	float p = (pidData->p * (float)error);
+	float i = (pidData->i * (pidData->integral));
+	float d =  (pidData->d * (error - pidData->prevError));
+	
+	int32_t output = (p) + (i) + d;
+	
+	pidData->prevError = error;
+		
+	//output  = output / 128;
+	/*
+	int min = 10;
+	if(output < 0)
+		output -= min;
+	else if(output > 0)
+		output += min;
+	*/
+	
+	if( output > 100 ) 
+		output = 100;	
+	else if( output < -100 ) 
+		output = -100;
+	else
+		pidData->integral += error;	
+	
+	//printf("E=%ld,p=%ld,i=%ld,d=%ld\n",error,p,i,d)	;
+	//printf("E=%ld,p=%ld,i=%ld,d=%ld\n",error,p,i,d)	;
+	
+	
+	return output;
+}
